@@ -2539,6 +2539,13 @@ body{
     </div>
 
     <div style="height:1px;background:var(--border);margin:16px 0"></div>
+    <div style="font-family:var(--mono);font-size:10px;color:#6e40c9;letter-spacing:0.1em;margin-bottom:12px">🚀 GITHUB (자동 배포)</div>
+    <div class="settings-field">
+      <label>GitHub Personal Access Token</label>
+      <input type="password" id="github-token-input" placeholder="ghp_...">
+      <div class="hint">github.com → Settings → Developer settings → Personal access tokens (repo 권한)</div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:16px 0"></div>
     <div style="font-family:var(--mono);font-size:10px;color:#4ade80;letter-spacing:0.1em;margin-bottom:12px">🤖 GOOGLE AI STUDIO (Veo3 · NanoBanana Pro)</div>
     <div class="settings-field">
       <label>Google AI Studio API Key</label>
@@ -3650,6 +3657,7 @@ window.onload = () => {
     state.r2PublicUrl = s.r2PublicUrl || '';
     state.googleKey = s.googleKey || '';
     state.openaiKey = s.openaiKey || '';
+    state.ghToken = s.ghToken || '';
     // 키 있으면 설정 모달 숨기기
     if (state.falKey) {
       document.getElementById('settings-modal').classList.add('hidden');
