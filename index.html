@@ -6575,63 +6575,63 @@ function confirmPreCuts() {
 // ═══════════════════════════════════════════
 // RESIZE HANDLES (공통)
 // ═══════════════════════════════════════════
-let _rsState = null;
+let _rs = null;
+
 function startResize(e, type) {
   e.preventDefault();
-  const handle = e.currentTarget;
-  handle.classList.add('dragging');
-  _rsState = { type, startX: e.clientX, startY: e.clientY, handle };
-
-  // 초기 크기 저장
+  e.stopPropagation();
+  const handle = e.currentTarget || e.target;
+  let startSize = 0;
   if (type === 'pre-board') {
-    const panel = document.getElementById('pre-panel');
-    _rsState.startSize = panel ? panel.offsetHeight : 0;
+    const p = document.getElementById('pre-panel');
+    startSize = p ? p.offsetHeight : 52;
   } else if (type === 'claude-gpt') {
-    const col = document.getElementById('pre-claude-col');
-    _rsState.startSize = col ? col.offsetWidth : 0;
+    const c = document.getElementById('pre-claude-col');
+    startSize = c ? c.offsetWidth : 300;
   } else if (type === 'cut-lr') {
-    const left = document.querySelector('.cut-left');
-    _rsState.startSize = left ? left.offsetWidth : 0;
+    const l = document.querySelector('.cut-left');
+    startSize = l ? l.offsetWidth : 380;
   }
-
-  document.addEventListener('mousemove', _doResize);
-  document.addEventListener('mouseup', _stopResize);
-}
-
-function _doResize(e) {
-  if (!_rsState) return;
-  const { type, startX, startY, startSize } = _rsState;
-
-  if (type === 'pre-board') {
-    const delta = e.clientY - startY;
-    const newH = Math.max(52, Math.min(window.innerHeight * 0.7, startSize + delta));
-    const panel = document.getElementById('pre-panel');
-    if (panel) {
-      panel.style.height = newH + 'px';
-      panel.style.maxHeight = newH + 'px';
-      panel.style.minHeight = newH + 'px';
-      if (newH > 52) panel.classList.add('expanded');
-      else panel.classList.remove('expanded');
+  _rs = { type, startX: e.clientX, startY: e.clientY, startSize };
+  handle.style.background = 'rgba(245,158,11,.3)';
+  function doMove(ev) {
+    if (!_rs) return;
+    const { type, startX, startY, startSize } = _rs;
+    if (type === 'pre-board') {
+      const delta = ev.clientY - startY;
+      const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + delta));
+      const p = document.getElementById('pre-panel');
+      if (p) {
+        if (newH > 52) {
+          p.classList.add('expanded');
+          p.style.height = newH + 'px';
+          p.style.maxHeight = newH + 'px';
+          p.style.minHeight = '52px';
+        } else {
+          p.classList.remove('expanded');
+          p.style.height = '52px';
+          p.style.maxHeight = '52px';
+          p.style.minHeight = '0';
+        }
+      }
+    } else if (type === 'claude-gpt') {
+      const delta = ev.clientX - startX;
+      const col = document.getElementById('pre-claude-col');
+      if (col) col.style.flex = `0 0 ${Math.max(200, startSize + delta)}px`;
+    } else if (type === 'cut-lr') {
+      const delta = ev.clientX - startX;
+      const left = document.querySelector('.cut-left');
+      if (left) left.style.width = Math.max(240, Math.min(700, startSize + delta)) + 'px';
     }
-    // 보드 높이도 함께 조절
-    const board = document.getElementById('board');
-    if (board) board.style.flex = '1';
-  } else if (type === 'claude-gpt') {
-    const delta = e.clientX - startX;
-    const col = document.getElementById('pre-claude-col');
-    if (col) col.style.flex = `0 0 ${Math.max(200, startSize + delta)}px`;
-  } else if (type === 'cut-lr') {
-    const delta = e.clientX - startX;
-    const left = document.querySelector('.cut-left');
-    if (left) left.style.width = Math.max(240, Math.min(600, startSize + delta)) + 'px';
   }
-}
-
-function _stopResize() {
-  if (_rsState?.handle) _rsState.handle.classList.remove('dragging');
-  _rsState = null;
-  document.removeEventListener('mousemove', _doResize);
-  document.removeEventListener('mouseup', _stopResize);
+  function doUp() {
+    handle.style.background = '';
+    _rs = null;
+    document.removeEventListener('mousemove', doMove);
+    document.removeEventListener('mouseup', doUp);
+  }
+  document.addEventListener('mousemove', doMove);
+  document.addEventListener('mouseup', doUp);
 }
 
 // ═══════════════════════════════════════════
