@@ -6576,8 +6576,6 @@ let _rs = null;
 
 function startResize(e, type) {
   e.preventDefault();
-  e.stopPropagation();
-  const handle = e.currentTarget || e.target;
   let startSize = 0;
   if (type === 'pre-board') {
     const p = document.getElementById('pre-panel');
@@ -6589,47 +6587,32 @@ function startResize(e, type) {
     const l = document.querySelector('.cut-left');
     startSize = l ? l.offsetWidth : 380;
   }
-  _rs = { type, startX: e.clientX, startY: e.clientY, startSize };
-  handle.style.background = 'rgba(245,158,11,.3)';
-  function doMove(ev) {
-    if (!_rs) return;
-    const { type, startX, startY, startSize } = _rs;
+  const startX = e.clientX, startY = e.clientY;
+  function onMove(ev) {
     if (type === 'pre-board') {
-      const delta = ev.clientY - startY;
-      const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + delta));
+      const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + (ev.clientY - startY)));
       const p = document.getElementById('pre-panel');
-      if (p) {
-        if (newH > 52) {
-          p.classList.add('expanded');
-          p.style.height = newH + 'px';
-          p.style.maxHeight = newH + 'px';
-          p.style.minHeight = '52px';
-        } else {
-          p.classList.remove('expanded');
-          p.style.height = '52px';
-          p.style.maxHeight = '52px';
-          p.style.minHeight = '0';
-        }
-      }
+      if (!p) return;
+      p.style.height = newH + 'px';
+      p.style.maxHeight = newH + 'px';
+      p.style.minHeight = newH <= 52 ? '0' : '52px';
+      newH > 52 ? p.classList.add('expanded') : p.classList.remove('expanded');
     } else if (type === 'claude-gpt') {
-      const delta = ev.clientX - startX;
       const col = document.getElementById('pre-claude-col');
-      if (col) col.style.flex = `0 0 ${Math.max(200, startSize + delta)}px`;
+      if (col) col.style.flex = `0 0 ${Math.max(200, startSize + (ev.clientX - startX))}px`;
     } else if (type === 'cut-lr') {
-      const delta = ev.clientX - startX;
       const left = document.querySelector('.cut-left');
-      if (left) left.style.width = Math.max(240, Math.min(700, startSize + delta)) + 'px';
+      if (left) left.style.width = Math.max(240, Math.min(700, startSize + (ev.clientX - startX))) + 'px';
     }
   }
-  function doUp() {
-    handle.style.background = '';
-    _rs = null;
-    document.removeEventListener('mousemove', doMove);
-    document.removeEventListener('mouseup', doUp);
+  function onUp() {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
   }
-  document.addEventListener('mousemove', doMove);
-  document.addEventListener('mouseup', doUp);
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
 }
+
 
 // ═══════════════════════════════════════════
 // BOARD VIEW (그리드 / 리스트 / 섹션)
