@@ -1370,7 +1370,7 @@ body{
 }
 
 /* ── PRE PANEL ── */
-#pre-panel{background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow:hidden;height:52px;max-height:52px;}
+#pre-panel{background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow:hidden;height:52px;max-height:52px;min-height:0;}
 #pre-panel.expanded{height:300px;max-height:70vh;min-height:52px;}
 .pre-header{
   height:52px;display:flex;align-items:center;
@@ -4254,22 +4254,19 @@ function openProject(id) {
   updateGlobalCtxBar();
   loadProjectPlanningData();
 
+  // 메인 표시, 홈 숨김
+  const mainEl = document.getElementById('main');
+  if (mainEl) mainEl.style.display = 'flex';
+  document.getElementById('home-screen').classList.add('hidden');
+
   // PRE 패널 항상 닫힌 상태로 시작
   const prePanel = document.getElementById('pre-panel');
   if (prePanel) {
     prePanel.classList.remove('expanded');
-    prePanel.style.height = '';
-    prePanel.style.maxHeight = '';
-    prePanel.style.minHeight = '';
+    prePanel.style.height = '52px';
+    prePanel.style.maxHeight = '52px';
+    prePanel.style.minHeight = '0';
   }
-
-  // 메인 화면 표시
-  const mainEl = document.getElementById('main');
-  if (mainEl) mainEl.style.display = 'flex';
-  const pageBoardEl = document.getElementById('page-board');
-  const pageCutEl = document.getElementById('page-cut');
-  if (pageBoardEl) pageBoardEl.style.display = 'flex';
-  if (pageCutEl) pageCutEl.classList.remove('active');
 }
 
 function deleteProject(id) {
