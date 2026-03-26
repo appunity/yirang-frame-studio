@@ -1370,16 +1370,8 @@ body{
 }
 
 /* ── PRE PANEL ── */
-#pre-panel{
-  background:var(--bg2);
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-  overflow:hidden;
-  max-height:52px;
-}
-#pre-panel.expanded{
-  max-height:70vh;
-}
+#pre-panel{background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;overflow:hidden;height:52px;max-height:52px;}
+#pre-panel.expanded{height:300px;max-height:70vh;min-height:52px;}
 .pre-header{
   height:52px;display:flex;align-items:center;
   padding:0 24px;gap:12px;cursor:pointer;
