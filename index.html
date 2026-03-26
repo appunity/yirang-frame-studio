@@ -1130,7 +1130,7 @@ body{
   flex:1;overflow-y:auto;
   padding:12px 14px;
   display:flex;flex-direction:column;gap:10px;
-  min-height:160px;max-height:260px;
+  min-height:0;
 }
 .ai-msg{
   display:flex;gap:8px;
@@ -6204,7 +6204,7 @@ async function callGPT(userMsg, systemMsg = '', maxTokens = 2000) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${state.openaiKey}` },
     body: JSON.stringify({
-      model: 'gpt-5.4',
+      model: 'gpt-4o',
       max_completion_tokens: maxTokens,
       messages: [{ role: 'user', content: fullMsg }]
     })
