@@ -2787,7 +2787,7 @@ S3 활용 사례: 실생활 연결, 공감" oninput="savePlanningField('sections
             </div>
           </div>
           <!-- Claude ↔ GPT 리사이즈 핸들 -->
-          <div class="resize-h" onmousedown="startResize(event,'claude-gpt')"></div>
+          <div class="resize-h" onpointerdown="startResize(event,'claude-gpt')"></div>
           <!-- GPT -->
           <div class="pre-ai-col" id="pre-gpt-col">
             <div class="pre-ai-col-header">
@@ -2828,7 +2828,7 @@ S3 활용 사례: 실생활 연결, 공감" oninput="savePlanningField('sections
   </div><!-- /pre-panel -->
 
   <!-- PRE ↕ 보드 리사이즈 핸들 -->
-  <div class="resize-v dragging" id="rh-pre-board" onmousedown="startResize(event,'pre-board')"></div>
+  <div class="resize-v dragging" id="rh-pre-board" onpointerdown="startResize(event,'pre-board')"></div>
 
   <div id="board">
     <div class="board-toolbar">
@@ -3396,7 +3396,7 @@ S3 활용 사례: 실생활 연결, 공감" oninput="savePlanningField('sections
     </div><!-- /cut-left -->
 
     <!-- 왼쪽 ↔ 오른쪽 리사이즈 핸들 -->
-    <div class="resize-h" onmousedown="startResize(event,'cut-lr')"></div>
+    <div class="resize-h" onpointerdown="startResize(event,'cut-lr')"></div>
 
     <!-- 오른쪽: 프레임 + 생성 + 버전 -->
     <div class="cut-right">
@@ -6588,7 +6588,10 @@ function startResize(e, type) {
     startSize = l ? l.offsetWidth : 380;
   }
   const startX = e.clientX, startY = e.clientY;
+  const dragging = { active: true };
+
   function onMove(ev) {
+    if (!dragging.active) return;
     if (type === 'pre-board') {
       const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + (ev.clientY - startY)));
       const p = document.getElementById('pre-panel');
@@ -6606,11 +6609,12 @@ function startResize(e, type) {
     }
   }
   function onUp() {
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup', onUp);
+    dragging.active = false;
+    window.removeEventListener('pointermove', onMove);
+    window.removeEventListener('pointerup', onUp);
   }
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup', onUp);
+  window.addEventListener('pointermove', onMove);
+  window.addEventListener('pointerup', onUp);
 }
 
 
