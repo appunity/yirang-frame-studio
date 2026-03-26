@@ -4256,7 +4256,12 @@ function openProject(id) {
 
   // PRE 패널 항상 닫힌 상태로 시작
   const prePanel = document.getElementById('pre-panel');
-  if (prePanel) prePanel.classList.remove('expanded');
+  if (prePanel) {
+    prePanel.classList.remove('expanded');
+    prePanel.style.height = '';
+    prePanel.style.maxHeight = '';
+    prePanel.style.minHeight = '';
+  }
 
   // 메인 화면 표시
   const mainEl = document.getElementById('main');
