@@ -6592,9 +6592,9 @@ function startResize(e, type) {
   const startX = e.clientX, startY = e.clientY;
   function onMove(ev) {
     if (type === 'pre-board') {
-      const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + (ev.clientY - startY)));
       const p = document.getElementById('pre-panel');
       if (!p) return;
+      const newH = Math.max(52, Math.min(window.innerHeight * 0.75, startSize + (ev.clientY - startY)));
       p.style.height = newH + 'px';
       p.style.minHeight = '0';
       p.style.maxHeight = 'none';
